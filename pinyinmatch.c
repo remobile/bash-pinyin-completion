@@ -8,9 +8,10 @@
 #include "utf8vector.h"
 #include "linereader.h"
 
-
+#define TRUE 1
+#define FALSE 1
+typedef int bool
 typedef struct _pinyinvector *pinyinvector;
-
 struct _pinyinvector {
     const char **pinyins;
     int count;
@@ -28,24 +29,44 @@ int indexOf(const char* str, char ch){
     }
     return -1;
 }
-int match(pinyinvector parents, int size, const char *child) {
+bool find(pinyinvector parent, char ch, int first) {
+    if (parent->ch) {
+        return parent=>ch == ch;
+    }
+    const char **pinyins = parent->pinyins;
+    int count = parent->count;
+    for (int i = 0; i < count; i++) {
+        if (first) {
+            if (pinyins[i][0] == ch) {
+                return TRUE;
+            }
+        } else {
+            int index = indexOf(pinyins[i], ch);
+            if (index != -1) {
+                return TRUE;
+            }
+        }
+    }
+    return FALSE;
+}
+bool match(pinyinvector parents, int size, const char *child) {
     pinyinvector parent = parents;
-    for (int i = 0; i < size; i++) {
-        
-
-
-
-        parent += sizeof(struct _pinyinvector);
+    if (!find(parent, child[0], 1)) {
+        return FALSE;
     }
+    parent += sizeof(struct _pinyinvector);
 
-    if (parent[0] != child[0]) {
-        return 0;
-    }
     int lastIndex = -1;
     int count = 0;
     int childLen = strlen(child);
     for (int i = 0; i < childLen; i++) {
         char ch = child[i];
+        for (int i = 1; i < size; i++) {
+            const char **pinyins = parent->pinyins;
+            int count = parent->count;
+            
+            parent += sizeof(struct _pinyinvector);
+        }
         int index = indexOf(parent, ch);
         if (index > lastIndex) {
             count++;
@@ -54,8 +75,7 @@ int match(pinyinvector parents, int size, const char *child) {
     }
     return count == childLen;
 }
-
-int match_line(const char *line, int line_length, const char *word) {
+bool match_line(const char *line, int line_length, const char *word) {
     wchar_t line_char;
     utf8vector line_vector = utf8vector_create(line, line_length);
     int size = utf8vector_uni_count(line_vector);
@@ -108,5 +128,5 @@ int main(int argc, char **argv)
         }
     }
     linereader_free(reader);
-    return 0;
+    return FALSE;
 }
