@@ -1,10 +1,3 @@
-/*
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- * Author : emptyhua@gmail.com
- * Create : 2011.9.26
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,7 +31,7 @@ static int linereader_readbuffer(linereader reader)
         memcpy(reader->read_buffer, reader->read_left_buffer, reader->read_left_count);
         return reader->read_left_count;
     }
-   
+
     int size = read(reader->fd, reader->read_buffer, read_buf_size);
     return size;
 }
@@ -53,7 +46,7 @@ int linereader_readline(linereader reader)
         free(reader->line_buffer);
         reader->line_buffer = NULL;
     }
-    
+
     int read_count = 0;
 
     while ((bytes_count = linereader_readbuffer(reader)) != 0)
@@ -61,7 +54,7 @@ int linereader_readline(linereader reader)
         read_count ++;
         char *read_buffer = reader->read_buffer;
         int br_index = -1;
-        
+
         for (int i = 0; i < bytes_count; i++)
         {
             if (read_buffer[i] == '\n')
@@ -70,7 +63,7 @@ int linereader_readline(linereader reader)
                 break;
             }
         }
-        
+
         //if \n finded
         if (br_index != -1)
         {
@@ -82,7 +75,7 @@ int linereader_readline(linereader reader)
                 memcpy(reader->line_buffer + line_size, read_buffer, copy_count);
                 line_size += copy_count;
             }
-            
+
             //save chars afer \n
             int left_count = bytes_count - br_index - 1;
             memcpy(reader->read_left_buffer, read_buffer + br_index + 1, left_count);
@@ -99,7 +92,7 @@ int linereader_readline(linereader reader)
             reader->read_left_count = 0;
         }
     }
-    
+
     if (read_count == 0)
     {
         return -1;
@@ -116,7 +109,7 @@ int main()
 #ifdef DEBUG
     FILE *fp = fopen("./linereader.c", "r");
     int fd = fileno(fp);
-    linereader reader = linereader_create(fd);  
+    linereader reader = linereader_create(fd);
     int count;
     char *output;
     while ((count = linereader_readline(reader)) != -1)
@@ -127,7 +120,7 @@ int main()
     linereader_free(reader);
     fclose(fp);
 #else
-    linereader reader = linereader_create(STDIN_FILENO);  
+    linereader reader = linereader_create(STDIN_FILENO);
     int count;
     char *output;
     while ((count = linereader_readline(reader)) != -1)

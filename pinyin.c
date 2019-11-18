@@ -1,14 +1,31 @@
-/*
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- * Author : emptyhua@gmail.com
- * Create : 2011.9.26
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "pinyin.h"
 #include "pinyin_data.h"
+
+int pinyin_get_tones_by_unicode(wchar_t uni, char **tones_out)
+{
+    if (!pinyin_ishanzi(uni))
+    {
+        *tones_out = NULL;
+        return 0;
+    }
+
+    int count = pinyin_count[uni - 19968];
+
+    if (count == 0)
+    {
+        *tones_out = NULL;
+        return 0;
+    }
+
+    char *tones = NULL;
+    tones = strdup(pinyin_tones[uni - 19968]);
+
+    *tones_out = tones;
+    return count;
+
+}
 
 int pinyin_get_pinyins_by_unicode(wchar_t uni, const char ***pinyins_out)
 {
@@ -17,7 +34,7 @@ int pinyin_get_pinyins_by_unicode(wchar_t uni, const char ***pinyins_out)
         *pinyins_out = NULL;
         return 0;
     }
-   
+
 
     int count = pinyin_count[uni - 19968];
 

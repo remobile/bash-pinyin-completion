@@ -1,10 +1,3 @@
-/*
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- * Author : emptyhua@gmail.com
- * Create : 2011.9.26
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
@@ -29,7 +22,7 @@ int match_line_with_keyword(const char *line, int line_length, const char *keywo
 {
     MYLOG("line_length %d", line_length);
 
-    wchar_t line_char,keyword_char; 
+    wchar_t line_char,keyword_char;
     int match_hanzi_count = 0;
 
     utf8vector line_vector = utf8vector_create(line, line_length);
@@ -110,9 +103,9 @@ int match_line_with_keyword(const char *line, int line_length, const char *keywo
                             j++;
                             kindex_start ++;
                         }
-                       
+
                         int matched = (pinyin_char == '\0');
-                        
+
                         if (matched)
                         {
                             finded = 1;
@@ -150,7 +143,7 @@ int match_line_with_keyword(const char *line, int line_length, const char *keywo
 
         keyword_index ++;
     }
-    
+
     //keyword.length > line.length
     if (match_rt == 1 && keyword_index < keyword_length)
         match_rt = 0;
@@ -172,15 +165,15 @@ int main(int argc, char **argv)
 
     while(1)
     {
-        static struct option long_options[] =  
+        static struct option long_options[] =
         {
-            {"help", no_argument, NULL, 'h'}, 
+            {"help", no_argument, NULL, 'h'},
             {"show-match-count", no_argument, NULL, 'c'},
             {"firstletter", no_argument, NULL, 'f'},
             {"firstletter-only", no_argument, NULL, 'F'},
             {0,0,0,0}
         };
-    
+
         int option_index = 0;
         int c = getopt_long(argc, argv, "hcfF", long_options, &option_index);
 
@@ -204,13 +197,13 @@ int main(int argc, char **argv)
                 break;
         }
     }
-    
+
     if (optind >= argc)
     {
         fprintf(stderr, "keyword missing\n");
         return 1;
     }
-    
+
     char *keyword = argv[optind];
 
     linereader reader = linereader_create(STDIN_FILENO);

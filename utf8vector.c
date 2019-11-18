@@ -1,10 +1,3 @@
-/*
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- * Author : emptyhua@gmail.com
- * Create : 2011.9.26
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
@@ -18,7 +11,7 @@
 
 utf8vector utf8vector_create(const char *utf8, int string_length)
 {
-    utf8vector vector = (utf8vector)calloc(1, sizeof(struct _utf8vector)); 
+    utf8vector vector = (utf8vector)calloc(1, sizeof(struct _utf8vector));
     vector->utf8_str = utf8;
     vector->length = string_length;
     vector->index = 0;
@@ -111,8 +104,8 @@ wchar_t utf8vector_next_unichar_with_raw(utf8vector vector, const char **raw, in
     {
         utf8vector_check_eof(4);
         vector->index += 4;
-        uni = ((utf[0] & 0x07) << 18) 
-             |((utf[1] & 0x3f) << 12) 
+        uni = ((utf[0] & 0x07) << 18)
+             |((utf[1] & 0x3f) << 12)
              |((utf[2] & 0x3f) << 6)
              |(utf[3] & 0x3f);
 
@@ -129,9 +122,9 @@ wchar_t utf8vector_next_unichar_with_raw(utf8vector vector, const char **raw, in
     {
         utf8vector_check_eof(5);
         vector->index += 5;
-        uni = ((utf[0] & 0x03) << 24) 
-             |((utf[1] & 0x3f) << 18) 
-             |((utf[2] & 0x3f) << 12) 
+        uni = ((utf[0] & 0x03) << 24)
+             |((utf[1] & 0x3f) << 18)
+             |((utf[2] & 0x3f) << 12)
              |((utf[3] & 0x3f) << 6)
              |(utf[4] & 0x3f);
 
@@ -147,11 +140,11 @@ wchar_t utf8vector_next_unichar_with_raw(utf8vector vector, const char **raw, in
     else if ( (*utf & 0xFE) == 0xFC )
     {
         utf8vector_check_eof(6);
-        vector->index += 6; 
-        uni = ((utf[0] & 0x01) << 30) 
-             |((utf[1] & 0x3f) << 24) 
-             |((utf[2] & 0x3f) << 18) 
-             |((utf[3] & 0x3f) << 12) 
+        vector->index += 6;
+        uni = ((utf[0] & 0x01) << 30)
+             |((utf[1] & 0x3f) << 24)
+             |((utf[2] & 0x3f) << 18)
+             |((utf[3] & 0x3f) << 12)
              |((utf[4] & 0x3f) << 6)
              |(utf[5] & 0x3f);
 
@@ -191,8 +184,8 @@ int main(int argc, char *argv[])
     while (1)
     {
         memset(read_buff, '\0', sizeof(char) * 1024);
-        
-        if (read(STDIN_FILENO, read_buff, 1024) <= 0) 
+
+        if (read(STDIN_FILENO, read_buff, 1024) <= 0)
             break;
 
         utf8vector vector = utf8vector_create(read_buff, 1024);
