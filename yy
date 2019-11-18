@@ -9,6 +9,15 @@
 #include "linereader.h"
 
 
+typedef struct _pinyinvector *pinyinvector;
+
+struct _pinyinvector {
+    const char **pinyins;
+    int count;
+    char ch;
+};
+
+
 int indexOf(const char* str, char ch){
     int index = 0;
     while(str[index] != '\0'){
@@ -22,7 +31,7 @@ int indexOf(const char* str, char ch){
 int match(pinyinvector parents, int size, const char *child) {
     pinyinvector parent = parents;
     for (int i = 0; i < size; i++) {
-
+        
 
 
 
@@ -50,16 +59,8 @@ int match_line(const char *line, int line_length, const char *word) {
     wchar_t line_char;
     utf8vector line_vector = utf8vector_create(line, line_length);
     int size = utf8vector_uni_count(line_vector);
-
-    int parentCount = 1;
-    while((line_char = utf8vector_next_unichar(line_vector)) != '\0') {
-        if (pinyin_ishanzi(line_char)) {
-             parentCount *= get_pinyin_count(line_char);
-        }
-    }
-    utf8vector_reset(line_vector);
-    char **parents = (char **)calloc(parentCount, sizeof(char *));
-
+    pinyinvector parents = (pinyinvector)calloc(size, sizeof(struct _pinyinvector));
+    pinyinvector parent = parents;
     while((line_char = utf8vector_next_unichar(line_vector)) != '\0') {
         if (pinyin_ishanzi(line_char)) {
             parent->count = pinyin_get_pinyins_by_unicode(line_char, &(parent->pinyins));
