@@ -3,14 +3,13 @@
 #include <stddef.h>
 #include <unistd.h>
 #include <getopt.h>
-#include <string.h>
 #include "pinyin.h"
 #include "utf8vector.h"
 #include "linereader.h"
 
-#define TRUE 1
-#define FALSE 1
-typedef int bool
+#define true 1
+#define false 0
+typedef int bool;
 typedef struct _pinyinvector *pinyinvector;
 struct _pinyinvector {
     const char **pinyins;
@@ -19,8 +18,44 @@ struct _pinyinvector {
 };
 
 
-int indexOf(const char* str, char ch){
+bool find(pinyinvector parent, char ch, bool first) {
+    if (parent->ch) {
+        return parent->ch == ch;
+    }
+    const char **pinyins = parent->pinyins;
+    int count = parent->count;
+    for (int i = 0; i < count; i++) {
+        if (first) {
+            if (pinyins[i][0] == ch) {
+                return true;
+            }
+        } else {
+            int index = indexOf(pinyins[i], ch);
+            if (index != -1) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+int indexOf(pinyinvector parents, int size, char ch, int offRow, int offCol){
+    pinyinvector parent = parents;
     int index = 0;
+    for (int i = 0; i < size; i++) {
+        if (parent->ch) {
+            if (parent->ch == ch) {
+                return i;
+            }
+        } else {
+            const char **pinyins = parent->pinyins;
+            int count = parent->count;
+            for () {
+
+            }
+        }
+        parent += sizeof(struct _pinyinvector);
+    }
+
     while(str[index] != '\0'){
         if(str[index] == ch){
             return index;
@@ -29,48 +64,20 @@ int indexOf(const char* str, char ch){
     }
     return -1;
 }
-bool find(pinyinvector parent, char ch, int first) {
-    if (parent->ch) {
-        return parent=>ch == ch;
-    }
-    const char **pinyins = parent->pinyins;
-    int count = parent->count;
-    for (int i = 0; i < count; i++) {
-        if (first) {
-            if (pinyins[i][0] == ch) {
-                return TRUE;
-            }
-        } else {
-            int index = indexOf(pinyins[i], ch);
-            if (index != -1) {
-                return TRUE;
-            }
-        }
-    }
-    return FALSE;
-}
 bool match(pinyinvector parents, int size, const char *child) {
-    pinyinvector parent = parents;
-    if (!find(parent, child[0], 1)) {
-        return FALSE;
+    if (!find(parents, child[0], true)) {
+        return false;
     }
-    parent += sizeof(struct _pinyinvector);
-
     int lastIndex = -1;
     int count = 0;
     int childLen = strlen(child);
     for (int i = 0; i < childLen; i++) {
         char ch = child[i];
-        for (int i = 1; i < size; i++) {
-            const char **pinyins = parent->pinyins;
-            int count = parent->count;
-            
-            parent += sizeof(struct _pinyinvector);
+        int index = indexOf(parents, size, ch, lastIndex);
+        if (index == -1) {
+            break;
         }
-        int index = indexOf(parent, ch);
-        if (index > lastIndex) {
-            count++;
-        }
+        count++;
         lastIndex = index;
     }
     return count == childLen;
@@ -128,5 +135,5 @@ int main(int argc, char **argv)
         }
     }
     linereader_free(reader);
-    return FALSE;
+    return false;
 }

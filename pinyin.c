@@ -3,24 +3,9 @@
 #include "pinyin.h"
 #include "pinyin_data.h"
 
-int pinyin_get_tones_by_unicode(wchar_t uni, char **tones_out)
-{
-    if (!pinyin_ishanzi(uni))
-    {
-        *tones_out = NULL;
-        return 0;
-    }
-
+int pinyin_get_tones_by_unicode(wchar_t uni, char **tones_out) {
     int count = pinyin_count[uni - 19968];
-
-    if (count == 0)
-    {
-        *tones_out = NULL;
-        return 0;
-    }
-
     *tones_out = strdup(pinyin_tones[uni - 19968]);
-
     return count;
 }
 

@@ -2,6 +2,7 @@
 #define _PINYIN
 
 #include <stddef.h>
+#include <string.h>
 
 //判断unicode是否为汉字
 #define pinyin_ishanzi(uni) ((uni) > 19967 && (uni) < 40870)
