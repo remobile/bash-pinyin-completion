@@ -12,7 +12,7 @@
 #define false 0
 typedef int bool;
 
-int indexOf(const char* str, int offset, char ch){
+int index_of(const char* str, int offset, char ch) {
     int index = 0;
     while(str[index] != '\0'){
         if(index > offset && str[index] == ch){
@@ -31,7 +31,7 @@ bool match_item(char* parent, const char *child) {
     int child_len = strlen(child);
     for (int i = 0; i < child_len; i++) {
         char ch = child[i];
-        int index = indexOf(parent, last_index, ch);
+        int index = index_of(parent, last_index, ch);
         if (index > last_index) {
             count++;
         }
@@ -106,8 +106,7 @@ bool match_line(const char *line, int line_length, const char *word) {
 
     return result;
 }
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     char *word = argv[1];
     int word_len = strlen(word);
     int select = (word_len > 0 && word[word_len-1] > 48 && word[word_len-1] < 58) ? word[word_len-1] - 48 : 0; // 查看最后一位是否为数字
@@ -120,7 +119,6 @@ int main(int argc, char **argv)
     linereader reader = linereader_create(STDIN_FILENO);
     while ((count = linereader_readline(reader)) != -1) {
         const char *line = reader->line_buffer;
-        printf("===%s\n", line);
         if (word_len == 0 || match_line(line, count, word)) {
             if (select == 0) {
                 printf("%s\n", line);
