@@ -8,36 +8,31 @@
 #include "utf8vector.h"
 #include "linereader.h"
 
+#define true 1
+#define false 0
+typedef int bool;
 
-int indexOf(const char* str, char ch){
+int indexOf(const char* str, int offset, char ch){
     int index = 0;
     while(str[index] != '\0'){
-        if(str[index] == ch){
+        if(index > offset && str[index] == ch){
             return index;
         }
         index++;
     }
     return -1;
 }
-int match(pinyinvector parents, int size, const char *child) {
-    pinyinvector parent = parents;
-    for (int i = 0; i < size; i++) {
-
-
-
-
-        parent += sizeof(struct _pinyinvector);
-    }
-
+bool match(char* parent, const char *child) {
+    printf("-=====%s, %s\n", parent, child);
     if (parent[0] != child[0]) {
-        return 0;
+        return false;
     }
     int lastIndex = -1;
     int count = 0;
     int childLen = strlen(child);
     for (int i = 0; i < childLen; i++) {
         char ch = child[i];
-        int index = indexOf(parent, ch);
+        int index = indexOf(parent, lastIndex, ch);
         if (index > lastIndex) {
             count++;
         }
@@ -59,21 +54,24 @@ int match_line(const char *line, int line_length, const char *word) {
     }
     utf8vector_reset(line_vector);
     char **parents = (char **)calloc(parentCount, sizeof(char *));
+    for (int i = 0; i < parentCount; i++) {
+        parents[i] = (char *)calloc(size * 6 + 1, sizeof(char));
+    }
 
     while((line_char = utf8vector_next_unichar(line_vector)) != '\0') {
         if (pinyin_ishanzi(line_char)) {
-            parent->count = pinyin_get_pinyins_by_unicode(line_char, &(parent->pinyins));
+            const char **pinyins;
+            int count = pinyin_get_pinyins_by_unicode(line_char, &pinyins);
+            strcat(parents[0], pinyins[0]);
+            free(pinyins);
         } else {
-            parent->ch = line_char;
+            parents[0][strlen(parents[0])] = line_char;
         }
-        parent += sizeof(struct _pinyinvector);
     }
-    int result = match(parents, size, word);
+    int result = match(parents[0], word);
     utf8vector_free(line_vector);
-    parent = parents;
-    for (int i = 0; i < size; i++) {
-        free(parent->pinyins);
-        parent += sizeof(struct _pinyinvector);
+    for (int i = 0; i < parentCount; i++) {
+        free(parents[i]);
     }
     free(parents);
 
@@ -107,5 +105,5 @@ int main(int argc, char **argv)
         }
     }
     linereader_free(reader);
-    return 0;
+    return false;
 }
