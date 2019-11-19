@@ -109,9 +109,12 @@ bool match_line(const char *line, int line_length, const char *word) {
 int main(int argc, char **argv) {
     char *word = argv[1];
     int word_len = strlen(word);
-    int select = (word_len > 0 && word[word_len-1] > 48 && word[word_len-1] < 58) ? word[word_len-1] - 48 : 0; // 查看最后一位是否为数字
-    if (select > 0) {
-        word[word_len-1] = '\0';
+    int select = 0;
+    if (word_len > 2 && word[word_len-2] == '@') { // fyj@1的格式为查看第几个
+        if (word[word_len-1] > 48 && word[word_len-1] < 58) {
+            select = word[word_len-1] - 48;
+            word[word_len-2] = '\0';
+        }
     }
 
     int count;
