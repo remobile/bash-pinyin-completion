@@ -14,7 +14,7 @@
 #include "utf8vector.h"
 #include "linereader.h"
 
-// #define DEBUG
+#define DEBUG
 #ifdef DEBUG
 #define MYLOG(x, ARGS...) fprintf (stderr, "\n%d:"x"\n", __LINE__, ##ARGS)
 #else
@@ -23,8 +23,6 @@
 
 
 int match_line_with_keyword(const char *line, int line_length, const char *keyword) {
-    // MYLOG("line=%s,keyword=%s", line, keyword);
-
     wchar_t line_char, keyword_char;
     int match_hanzi_count = 0;
 
@@ -108,7 +106,7 @@ int main(int argc, char **argv) {
     {
         const char *line = reader->line_buffer;
         int match_count = match_line_with_keyword(line, count, keyword);
-        MYLOG("match_count=%d", match_count);
+        // MYLOG("match_count=%d, line=%s", match_count, line);
         if (match_count > 0) {
             printf("%.*s\n", count, line);
         }
