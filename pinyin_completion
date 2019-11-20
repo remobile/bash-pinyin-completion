@@ -31,11 +31,11 @@ fi
 
 _py_completion()
 {
-    local IFS=$'\t\n' 
+    local IFS=$'\t\n'
     local cur
 
 #兼容旧版本的bash-completion
-    test -z "$(typeset -f _get_comp_words_by_ref)" && 
+    test -z "$(typeset -f _get_comp_words_by_ref)" &&
     cur="$(_get_cword)" ||
         _get_comp_words_by_ref cur
 
@@ -57,7 +57,7 @@ _py_completion()
         bname="${bname:1}"
     fi
 
-    #eval 用于消除转义符 例如 \[ 将变成 [ 
+    #eval 用于消除转义符 例如 \[ 将变成 [
     eval dname_real="$dname"
     eval bname_real="$bname"
 
@@ -74,20 +74,20 @@ _py_completion()
 
     if [[ "$1" == "-d" ]];then
         rt=(${rt[@]-} $(
-        compgen -d|pinyinmatch -f -c "$bname_real"|grep -v "^0"|cut -c 3-|while read -r tmp;do 
+        compgen -d|pinyinmatch "$bname_real"|while read -r tmp;do
         printf '%s%s%s\n' "$dname_real" "$sep" "$tmp"
         done
         ))
     else
         rt=(${rt[@]-} $(
-        compgen -f|pinyinmatch -f -c "$bname_real"|grep -v "^0"|cut -c 3-|while read -r tmp;do
+        compgen -f|pinyinmatch "$bname_real"|while read -r tmp;do
         printf '%s%s%s\n' "$dname_real" "$sep" "$tmp"
         done
         ))
         [ ${#rt[@]} -ne 0 ] && _compopt_o_filenames
     fi
 
-    cd $OLDPWD 
+    cd $OLDPWD
 
     COMPREPLY=( "${COMPREPLY[@]}" "${rt[@]}" )
 }
@@ -97,7 +97,7 @@ _py_save_function _filedir _py_bak_filedir
 _filedir()
 {
     _py_bak_filedir $@
-    _py_completion $@ 
+    _py_completion $@
 }
 
 _py_save_function _filedir_xspec _py_bak_filedir_xspec
@@ -105,8 +105,7 @@ _py_save_function _filedir_xspec _py_bak_filedir_xspec
 _filedir_xspec ()
 {
     _py_bak_filedir_xspec $@
-    _py_completion $@ 
+    _py_completion $@
 }
 
 unset -f _py_save_function
-
