@@ -75,7 +75,8 @@ _py_completion()
     if [[ "$1" == "-d" ]];then
         list=($(
         compgen -d|pinyinmatch "$bname_real"|while read -r tmp;do
-        printf '%s%s%s\n' "$dname_real" "$sep" "$tmp"
+        # printf '%s%s%s\n' "$dname_real" "$sep" "$tmp"
+        printf '%s%\n' "$dname_real"
         done
         ))
     else
@@ -84,6 +85,7 @@ _py_completion()
     fi
     cd $OLDPWD
 
+    COMPREPLY=( "${list1[@]}" "${list[@]}" )
     # 去重
     local -a list1
     local var var1 found len
@@ -98,15 +100,14 @@ _py_completion()
             list1=( "${list1[@]}" "${var}" );
         fi
     done
-    COMPREPLY=( "${list1[@]}" "${list[@]}" )
-    # COMPREPLY=(  "${list[@]}" )
+
     len=${#COMPREPLY[@]}
     if [ ${len} -eq 1 ];then
         if [ "$dname_real" != "." ];then
             COMPREPLY=( "${dname_real}${sep}${COMPREPLY[0]}" )
         fi
     elif [ ${len} -ne 0 ];then
-        COMPREPLY=( "${COMPREPLY[@]}" "[1-${len}]选择:" )
+        COMPREPLY=( "${COMPREPLY[@]}" "+[1-${len}]选择:" )
     fi
 }
 
