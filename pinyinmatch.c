@@ -16,7 +16,7 @@
 
 #define DEBUG
 #ifdef DEBUG
-#define MYLOG(x, ARGS...) fprintf (stderr, "\n%d:"x"\n", __LINE__, ##ARGS)
+#define MYLOG(x, ARGS...) fprintf (stderr, "\n%s:"x"\n", __FUNCTION__, ##ARGS)
 #else
 #define MYLOG(x, ARGS...)
 #endif //DEBUG
