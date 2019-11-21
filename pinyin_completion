@@ -81,7 +81,11 @@ _py_completion()
     else
         rt=(${rt[@]-} $(
         compgen -f|pinyinmatch "$bname_real"|while read -r tmp;do
-        printf '%s%s%s\n' "$dname_real" "$sep" "$tmp"
+            if [ "$dname_real" = "." ];then
+                printf '%s\n' "$tmp"
+            else
+                printf '%s%s%s\n' "$dname_real" "$sep" "$tmp"
+            fi
         done
         ))
         [ ${#rt[@]} -ne 0 ] && _compopt_o_filenames
@@ -90,6 +94,8 @@ _py_completion()
     cd $OLDPWD
 
     COMPREPLY=( "${COMPREPLY[@]}" "${rt[@]}" )
+
+    echo "${COMPREPLY[@]}" > /Users/whxx/test/x/1
 }
 
 _py_save_function _filedir _py_bak_filedir

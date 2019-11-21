@@ -71,7 +71,6 @@ int match_line_with_keyword(const char *line, int line_length, const char *keywo
                     break;
                 }
             } else {
-                //printf("not hanzi or abc %d\n", keyword_char);
                 match_rt = 0;
                 break;
             }
