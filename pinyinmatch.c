@@ -105,7 +105,7 @@ int main(int argc, char **argv) {
     {
         const char *line = reader->line_buffer;
         int match_count = match_line_with_keyword(line, count, keyword);
-        // MYLOG("match_count=%d, line=%s", match_count, line);
+        MYLOG("match_count=%d, line=%s", match_count, line);
         if (match_count > 0) {
             printf("%.*s\n", count, line);
         }
