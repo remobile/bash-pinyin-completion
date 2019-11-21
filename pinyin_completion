@@ -42,7 +42,7 @@ _py_completion()
     _expand || return 0
 
     local dname_real bname_real dname bname tmp tmp2 sep
-    local -a rt
+    local -a list
 #目录名部分
     dname="$(dirname "$cur")";
 #文件名部分
@@ -73,29 +73,44 @@ _py_completion()
     cd $dname_real
 
     if [[ "$1" == "-d" ]];then
-        rt=(${rt[@]-} $(
+        list=($(
         compgen -d|pinyinmatch "$bname_real"|while read -r tmp;do
         printf '%s%s%s\n' "$dname_real" "$sep" "$tmp"
         done
         ))
     else
-        rt=(${rt[@]-} $(
-        compgen -f|pinyinmatch "$bname_real"|while read -r tmp;do
-            if [ "$dname_real" = "." ];then
-                printf '%s\n' "$tmp"
-            else
-                printf '%s%s%s\n' "$dname_real" "$sep" "$tmp"
-            fi
-        done
-        ))
-        [ ${#rt[@]} -ne 0 ] && _compopt_o_filenames
+        list=($(compgen -f|pinyinmatch "$bname_real"))
+        [ ${#list[@]} -ne 0 ] && _compopt_o_filenames
     fi
-
     cd $OLDPWD
 
-    COMPREPLY=( "${COMPREPLY[@]}" "${rt[@]}" )
+    # 去重
+    local -a list1
+    local var var1 found len
+    for var in "${COMPREPLY[@]}";do
+        found=0
+        for var1 in "${list1[@]}";do
+            if [ "$var" = "$var1" ];then
+                found=1
+            fi
+        done
+        if [ "$found" = "0" ];then
+            list1=( "${list1[@]}" "${var}" );
+        fi
+    done
+    echo ==${list1[@]} ${#list1[@]} > /Users/whxx/test/x/1
+    COMPREPLY=( "${list1[@]}" "${list[@]}" )
+    len=${#COMPREPLY[@]}
+    if [ ${len} -eq 1 ];then
+        if [ "$dname_real" != "." ];then
+            COMPREPLY=( "${dname_real}${sep}${COMPREPLY[0]}" )
+        fi
+    elif [ ${len} -ne 0 ];then
+        COMPREPLY=( "${COMPREPLY[@]}" "[1-${len}]选择:" )
+    fi
 
-    echo "${COMPREPLY[@]}" > /Users/whxx/test/x/1
+    echo =${COMPREPLY[@]}  >> /Users/whxx/test/x/1
+    echo ===$bname_real  >>  /Users/whxx/test/x/1
 }
 
 _py_save_function _filedir _py_bak_filedir
