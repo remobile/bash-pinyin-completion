@@ -4,6 +4,10 @@
 
 #用于保存覆盖之前的函数
 #from http://mivok.net/2009/09/20/bashfunctionoverride.html
+
+__MYLOG() {
+    echo "$@" >> /Users/whxx/test/x/1
+}
 _py_save_function() {
     local ORIG_FUNC=$(declare -f $1)
     local NEWNAME_FUNC="$2${ORIG_FUNC#$1}"
@@ -85,8 +89,8 @@ _py_completion()
     fi
     cd $OLDPWD
 
-    echo rt="${rt[@]}" >> /Users/whxx/test/x/1
-    echo  pre COMPREPLY="${COMPREPLY[@]}" >> /Users/whxx/test/x/1
+    __MYLOG rt="${rt[@]}"
+    __MYLOG  pre COMPREPLY="${COMPREPLY[@]}"
     COMPREPLY=( "${COMPREPLY[@]}" "${rt[@]}" )
     # 去重
     local -a list
@@ -112,6 +116,7 @@ _py_completion()
     elif [ ${len} -ne 0 ];then
         COMPREPLY=( "${list[@]}" "+[1-${len}]选择:" )
     fi
+    __MYLOG COMPREPLY="${COMPREPLY[@]}"
 }
 
 _py_save_function _filedir _py_bak_filedir
