@@ -101,11 +101,11 @@ int main(int argc, char **argv) {
     char *keyword = argv[1];
     linereader reader = linereader_create(STDIN_FILENO);
     int count;
+    MYLOG("keyword=%s", keyword);
     while ((count = linereader_readline(reader)) != -1)
     {
         const char *line = reader->line_buffer;
         int match_count = match_line_with_keyword(line, count, keyword);
-        MYLOG("keyword=%s", keyword);
         if (match_count >= 0) {
             MYLOG("match_count=%d, line=%s", match_count, line);
         }
